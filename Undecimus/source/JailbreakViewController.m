@@ -1476,8 +1476,9 @@ void jailbreak()
         NSArray *resources = [NSArray arrayWithContentsOfFile:@"/usr/share/jailbreak/injectme.plist"];
         // If substrate is already running but was broken, skip injecting again
         if (!skipSubstrate) {
-            resources = [@[@"/usr/libexec/substrate", @"/usr/libexec/substrated", @"/usr/lib/substrate/SubstrateBootstrap.dylib"] arrayByAddingObjectsFromArray:resources];
+            resources = [@[@"/usr/libexec/substrate"] arrayByAddingObjectsFromArray:resources];
         }
+        resources = [resources arrayByAddingObjectsFromArray:@[@"/usr/libexec/substrated", @"/usr/lib/substrate/SubstrateBootstrap.dylib"]];
         _assert(injectTrustCache(resources, GETOFFSET(trustcache)) == ERR_SUCCESS, message, true);
         LOG("Successfully injected trust cache.");
         INSERTSTATUS(NSLocalizedString(@"Injected trust cache.\n", nil));
@@ -2024,6 +2025,7 @@ void jailbreak()
                 rv = system("nohup bash -c \""
                              "sleep 1 ;"
                              "launchctl unload /System/Library/LaunchDaemons/com.apple.backboardd.plist && "
+                             "sleep 2 && "
                              "ldrestart ;"
                              "launchctl load /System/Library/LaunchDaemons/com.apple.backboardd.plist"
                              "\" >/dev/null 2>&1 &");
