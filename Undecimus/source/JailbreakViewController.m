@@ -2021,7 +2021,7 @@ void jailbreak()
             
             LOG("Loading Tweaks...");
             SETMESSAGE(NSLocalizedString(@"Failed to load tweaks.", nil));
-            if (prefs.reload_system_daemons) {
+            if (prefs.reload_system_daemons && !(prefs.exploit == voucher_swap_exploit && kCFCoreFoundationVersionNumber >= 1535.12)) {
                 rv = system("nohup bash -c \""
                              "sleep 1 ;"
                              "launchctl unload /System/Library/LaunchDaemons/com.apple.backboardd.plist && "
@@ -2032,7 +2032,8 @@ void jailbreak()
             } else {
                 rv = system("nohup bash -c \""
                             "sleep 1 ;"
-                            "launchctl stop com.apple.backboardd"
+                            "launchctl stop com.apple.backboardd ;"
+                            "launchctl stop com.apple.mDNSResponder"
                             "\" >/dev/null 2>&1 &");
             }
             _assert(WEXITSTATUS(rv) == ERR_SUCCESS, message, true);
